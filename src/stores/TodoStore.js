@@ -1,10 +1,20 @@
 import {extendObservable, autorun, computed} from "mobx";
 
+class Todo{
+	constructor(value){
+		extendObservable(this,{
+			value:value,
+			isComplete:false,
+			id:Date.now()
+		})
+	}
+}
+
 class TodoStore {
 
 	constructor(){
 		extendObservable(this, {
-				todos : ["buy milk", "buy eggs"],
+				todos : [],
 				filter : "",
 				filteredTodos : computed(()=>{
 					var matchFilter = new RegExp(this.filter, "i");
@@ -14,6 +24,16 @@ class TodoStore {
 				})
 			}
 		);
+	}
+
+	createTodo(v){
+		this.todos.push( new Todo(v) );
+	}
+
+	clearCompletedTodo=()=>{
+		
+		const completedTodos = this.todos.filter( todo=>!todo.isComplete );
+		this.todos.replace(completedTodos);
 	}
 
 }
